@@ -1,4 +1,4 @@
-﻿/* "Advanced Windows Tool" Written by Gorkido aka Gorkido#8195 on Discord */
+﻿/* "Windows-Startup-Cleaner" Written by Gorkido aka Gorkido#5163 on Discord */
 
 using System;
 using System.IO;
@@ -134,4 +134,4 @@ namespace WindowsStartup
     }
 }
 
-/* "Advanced Windows Tool" Written by Gorkido aka Gorkido#8195 on Discord */
+/* "Windows-Startup-Cleaner" Written by Gorkido aka Gorkido#5163 on Discord */

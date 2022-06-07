@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿/* "Windows-Startup-Cleaner" Written by Gorkido aka Gorkido#5163 on Discord */
+
+using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Diagnostics;
@@ -193,3 +195,5 @@ namespace WindowsStartup
         }
     }
 }
+
+/* "Windows-Startup-Cleaner" Written by Gorkido aka Gorkido#5163 on Discord */

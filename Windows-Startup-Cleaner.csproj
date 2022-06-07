@@ -8,7 +8,7 @@
     <ProjectGuid>{5032C432-BD13-427E-9962-89FCDC72684C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>WindowsStartup</RootNamespace>
-    <AssemblyName>Windows_Startup_Cleaner</AssemblyName>
+    <AssemblyName>Windows Startup Cleaner</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
