@@ -116,6 +116,7 @@ namespace Windows_Startup_Cleaner
             // Kill dwm (it restarts itself so no need to restart it manually.
             RunCmd("/c taskkill /f /t /im dwm.exe");
             Thread.Sleep(1000);
+            // Sometimes cmd fails to kill itself, so we kill it.
             RunCmd("/c taskkill /f /t /im cmd.exe");
 
             // Get FilePaths.cs.
