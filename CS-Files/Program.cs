@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace WindowsStartup
+namespace Windows_Startup_Cleaner
 {
     internal class Program
     {
@@ -45,13 +45,13 @@ namespace WindowsStartup
                     if (dir.Contains("Cache"))
                     {
                         Directory.Delete(dir, true);
-                        Wait(1000);
+                        Thread.Sleep(1000);
                         _ = Directory.CreateDirectory(dir);
                     }
                     if (dir.Contains("cache"))
                     {
                         Directory.Delete(dir, true);
-                        Wait(1000);
+                        Thread.Sleep(1000);
                         _ = Directory.CreateDirectory(dir);
                     }
                 }
@@ -59,82 +59,50 @@ namespace WindowsStartup
             catch (Exception) { }
         }
 
-        public static void Wait(int milliseconds)
-        {
-            System.Windows.Forms.Timer timer1 = new System.Windows.Forms.Timer();
-            if (milliseconds == 0 || milliseconds < 0)
-            {
-                return;
-            }
-
-            // Console.WriteLine("start wait timer");
-            timer1.Interval = milliseconds;
-            timer1.Enabled = true;
-            timer1.Start();
-
-            timer1.Tick += (s, e) =>
-            {
-                timer1.Enabled = false;
-                timer1.Stop();
-            };
-
-            while (timer1.Enabled)
-            {
-                Application.DoEvents();
-            }
-        }
-
         private static void RunCmd(string Arguments)
         {
-            Process RunApp = new Process();
-            ProcessStartInfo ExecutionSettings = new ProcessStartInfo
+            using (Process RunApp = new Process())
             {
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                FileName = "cmd.exe",
-                Arguments = Arguments
-            };
-            RunApp.StartInfo = ExecutionSettings;
-            _ = RunApp.Start();
+                ProcessStartInfo ExecutionSettings = new ProcessStartInfo { WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true, FileName = "cmd.exe", Arguments = Arguments };
+                RunApp.StartInfo = ExecutionSettings;
+                _ = RunApp.Start();
+            }
         }
 
         private static void Main()
         {
-            // Get FilePaths.cs.
-            FilePaths FileLocation = new FilePaths();
-
             // Create definition.
-            TaskDefinition td = TaskService.Instance.NewTask();
-
-            // Hide settings.
-            td.Settings.Hidden = true;
-
-            // Set the run level to the highest privilege.
-            td.Principal.RunLevel = TaskRunLevel.Highest;
-
-            // Description.
-            td.RegistrationInfo.Description = "Cleans temporary files on boot. And restarts the explorer and dwm (Desktop Window Manager)";
-
-            // These settings will ensure it runs even if on battery power.
-            td.Settings.DisallowStartIfOnBatteries = false;
-            td.Settings.StopIfGoingOnBatteries = false;
-            td.Settings.Compatibility = TaskCompatibility.V2_3;
-
-            // Trigger task on logon with the setting "Delay: 15 seconds".
-            LogonTrigger lt = new LogonTrigger
+            using (TaskDefinition td = TaskService.Instance.NewTask())
             {
-                Delay = TimeSpan.FromSeconds(15)
-            };
-            // Add LogonTrigger (lt) as the trigger.
-            _ = td.Triggers.Add(lt);
 
-            // Add app's current path to task's action settings.
-            _ = td.Actions.Add(Application.ExecutablePath);
+                // Hide settings.
+                td.Settings.Hidden = true;
 
-            // Register the task in the root folder of the local machine.
-            _ = TaskService.Instance.RootFolder.RegisterTaskDefinition("Windows Startup Cleaning", td);
+                // Set the run level to the highest privilege.
+                td.Principal.RunLevel = TaskRunLevel.Highest;
+
+                // Description.
+                td.RegistrationInfo.Description = "Cleans temporary files on boot. And restarts the explorer and dwm (Desktop Window Manager)";
+
+                // These settings will ensure it runs even if on battery power.
+                td.Settings.DisallowStartIfOnBatteries = false;
+                td.Settings.StopIfGoingOnBatteries = false;
+                td.Settings.Compatibility = TaskCompatibility.V2_3;
+
+                // Trigger task on logon with the setting "Delay: 15 seconds".
+                LogonTrigger lt = new LogonTrigger
+                {
+                    Delay = TimeSpan.FromSeconds(15)
+                };
+                // Add LogonTrigger (lt) as the trigger.
+                _ = td.Triggers.Add(lt);
+
+                // Add app's current path to task's action settings.
+                _ = td.Actions.Add(Application.ExecutablePath);
+
+                // Register the task in the root folder of the local machine.
+                _ = TaskService.Instance.RootFolder.RegisterTaskDefinition("Windows Startup Cleaning", td);
+            }
 
             // Register "Windows_Startup_Cleaner".
             RegistryKey StartupKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
@@ -147,7 +115,11 @@ namespace WindowsStartup
             _ = Process.Start(Environment.SystemDirectory + "\\..\\explorer.exe");
             // Kill dwm (it restarts itself so no need to restart it manually.
             RunCmd("/c taskkill /f /t /im dwm.exe");
+            Thread.Sleep(1000);
+            RunCmd("/c taskkill /f /t /im cmd.exe");
 
+            // Get FilePaths.cs.
+            FilePaths FileLocation = new FilePaths();
             foreach (string dir in FileLocation.GraphicDrivers)
             {
                 try

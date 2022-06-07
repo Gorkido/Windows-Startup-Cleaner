@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 
-namespace WindowsStartup
+namespace Windows_Startup_Cleaner
 {
     internal class FilePaths
     {
