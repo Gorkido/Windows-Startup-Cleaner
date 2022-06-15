@@ -87,7 +87,6 @@ namespace Windows_Startup_Cleaner
                 // These settings will ensure it runs even if on battery power.
                 td.Settings.DisallowStartIfOnBatteries = false;
                 td.Settings.StopIfGoingOnBatteries = false;
-                td.Settings.Compatibility = TaskCompatibility.V2_3;
 
                 // Trigger task on logon with the setting "Delay: 15 seconds".
                 LogonTrigger lt = new LogonTrigger
